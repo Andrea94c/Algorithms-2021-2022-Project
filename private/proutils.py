@@ -44,7 +44,7 @@ def check_stats_solution(group_id : int, stock: str, min: float, max: float, mea
     return return_message
 
 
-def check_timeseries_solution(group_id : int, stock: str, days: list, prices: list, plot: bool = True) -> str:
+def check_timeseries_solution(group_id : int, stock: str, days: list, prices: list, dataset : str, plot: bool = True) -> str:
     """
     The method check the results of days, prices, and plot also the target/output
 
@@ -52,11 +52,15 @@ def check_timeseries_solution(group_id : int, stock: str, days: list, prices: li
     :param stock: the name of the stock to print, it should be inside the dataset file
     :param days: a list of (ordered) days to validate/plot
     :param prices: a list of prices (ordered) to validate/plot
+    :param dataset : the file used to evalute the project
     :param plot: wheter plot or not the results
     :return: a string with the successfull or error message
     """
     return_message = "Solution time-series for stock " + stock + ":\n"
-    soldays, solprices = solutions.TIME_SERIES_SOLUTION[stock]
+    if "huge" in dataset:
+        soldays, solprices = solutions.TIME_SERIES_SOLUTION_HUGE[stock]
+    else:
+        soldays, solprices = solutions.TIME_SERIES_SOLUTION[stock]
     if len(days) != len(prices):
         return_message += "The two input lists have different len. Days has len {} while prices has len {} \n".format(str(len(days)),
                                                                                                    str(len(prices)))
@@ -77,7 +81,15 @@ def check_timeseries_solution(group_id : int, stock: str, days: list, prices: li
 
     print("Plotting results...")
     if plot:
-        plot_stock_timeseries(stock, days, prices, OUT_FILES + "proj_v2_" + stock + "_result_gid_" + str(group_id) +".png")
+        suffix = "_small"
+        if "medium" in dataset:
+            suffix = "_medium"
+        if "huge" in dataset:
+            suffix = "_huge"
+        if "large" in dataset:
+            suffix = "_large"
+
+        plot_stock_timeseries(stock, days, prices, OUT_FILES + "proj_v2_" + stock + "_result_gid_" + str(group_id) + suffix + ".png")
 
     return return_message
 

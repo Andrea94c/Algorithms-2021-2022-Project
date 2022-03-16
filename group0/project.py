@@ -1,5 +1,4 @@
 from . import utils
-
 # Global data to store information
 your_variables_here = ""
 
@@ -12,19 +11,21 @@ def prepare(filename : str):
 
     # Read your file here and put the needed data into "your_variables_here".
     # you can also create complex data-structures here, if you need
-
     print('Done'.format(filename))
 
 
-def stock_stats(stock : str):
-    print('Searching min, max, and mean price of stock : {}'.format(stock))
-    # Search into global data for min, max and mean of the input stock
+def stock_timeseries(stock : str):
+    print('Building time-series for stock : {}'.format(stock))
+    # Search into global data the prices and days of the input stock
     if stock in your_variables_here:
-        minprice, meanprice, maxprice = 0, 0, 0  # find the correct data
+        days = [1, 2, 3]  # find the correct data - manipulate data
+        prices = [100, 150, 130]  # find the correct data - manipulate data
     else:
-        minprice, meanprice, maxprice = 10, 20, 30  # find the correct data
+        # no data available
+        days = [1, 2, 3]  # find the correct data - manipulate data
+        prices = [100, 150, 130]  # find the correct data - manipulate data
 
-    print("Min-price : {}, Mean-Price : {}, Max-Price : {} for stock : {}".format(minprice, meanprice, maxprice, stock))
+    # NOTE: please return these value with the following order: days, prices
+    return days, prices
 
-    # NOTE: please return these value with the following order: min, mean, max
-    return minprice, meanprice, maxprice
+

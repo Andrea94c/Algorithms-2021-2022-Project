@@ -1,9 +1,7 @@
 # Algorithms A.Y. 2021/22 
 ## Software project : A Stock Market Analyzer 
 
-Release V1 - Compute Min, Max and Mean of price.  
-
-
+Release V2 - Compute ordered price values
 
 
 ## Project structure 
@@ -22,9 +20,9 @@ The project has the following structure:
 │   └── solutions.py
 ├── results
 └── results_gold
-    ├── proj_v1_AAPL_target.png
-    ├── proj_v1_FB_target.png
-    └── proj_v1_TSLA_target.png
+    ├── proj_v2_AAPL_target.png
+    ├── proj_v2_FB_target.png
+    └── proj_v2_TSLA_target.png
 ```
 
 We are providing you a skeleton of the code. You can modify the code we provide, adding the
@@ -36,9 +34,9 @@ registration on Luiss Learn, and also change the group_id value in main.py.
 Implement your code in file groupid/project.py, that contains two functions (you can add more functions, if
 needed, but you must at least implement these ones). Function prepare will be called once to load the dataset: 
 it can be used to prepare and read the input file (e.g., data/small_dataset.txt), and store the relevant information in suitable global data
-structures of your choice. Function stock_stats should implement your query algorithm, as
+structures of your choice. Function stock_timeseries should implement your query algorithm, as
 described in the project pdf. It receives as input the stock name (e.g., AAPL) and it outputs
-the observed min, mean, max of the price. The order of the output is important!  
+the ordered list of price values. Thus, the order of the output is important!  
 
 You can use additional files, if needed, but all of them have to be in the group folder. There is a file
 utils.py where, if you want, you can implement auxiliary algorithms and data structures.
