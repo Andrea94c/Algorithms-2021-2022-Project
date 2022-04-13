@@ -1,4 +1,5 @@
 # DO NOT CHANGE THIS FILE
+from distutils.command.config import config
 import pandas as pd
 import seaborn as sns
 import numpy as np
@@ -8,43 +9,56 @@ from . import solutions
 
 sns.set(rc={'figure.figsize':(12, 4)})
 OUT_FILES = "results/"
-dataset_file_to_plot = "data/small_dataset.txt"
 
-def check_stats_solution(group_id : int, stock: str, min: float, max: float, mean: float, plot: bool = True) -> str:
-    """
-    The method check the results of min, max, mean and prices of the input stock, and plot also the target/output
+def check_stats_solution_optional(gid, filename, corr_threshold, corr_level, stock, res):
+    return_message = "Solution stats for stock " + stock + " with threshold: {} and corr_level : {} \n".format(corr_threshold, corr_level)
+    
+    if "small" in filename:
+        sol = solutions.SMALL_FULL_SOLUTION[(corr_threshold)]
+    elif "medium" in filename:
+        sol = solutions.MEDIUM_FULL_SOLUTION[(corr_threshold)]
+    elif "large" in filename:
+        sol = solutions.LARGE_FULL_SOLUTION[(corr_threshold)]
+    else:
+        print("filename: {} not supported!".format(filename))
+    
 
-    :param group_id : the group id (unique) for each group
-    :param stock: the name of the stock to print, it should be inside the dataset file
-    :param min: the min price value observed
-    :param max: the max price value
-    :param mean: the mean price for the overall time-series
-    :param plot: wheter plot or not the results
-    :return: a string with the successfull or error message
-    """
-    return_message = "Solution stats for stock " + stock + ":\n"
-    minsol, meansol, maxsol = solutions.STATS_SOLUTION[stock]
-    error = False
-    if minsol != round(min, 2):
+    error = False 
+    if sol != res:    
         error = True
-        return_message += "Min is not correct, expected {} but got {}\n".format(minsol, min)
-    if meansol != round(mean, 2):
-        error = True
-        return_message += "Mean is not correct, expected {} but got {}\n".format(meansol, mean)
-    if maxsol != round(max, 2):
-        error = True
-        return_message += "Max is not correct, expected {} but got {}\n".format(maxsol, max)
-
-    if not error:
+        return_message += "The number of connected components is not correct, expected {} but got {}.\n".format(sol, res)
+    else:
         return_message += " IS CORRECT, Congratulations!"
 
-    print("Plotting results...")
-    if plot:
-        plot_stock_stats(dataset_file_to_plot, stock, min, max, mean, OUT_FILES + "proj_v1_" + stock + "_result_gid_" + str(group_id) +".png")
-    return return_message
+    return error, return_message
+
+def check_stats_solution(gid, filename, corr_threshold, corr_level, stock, res):
+    return_message = "Solution stats for stock " + stock + " with threshold: {} and corr_level : {} \n".format(corr_threshold, corr_level)
+    
+    if "small" in filename:
+        sol = solutions.SMALL_FULL_SOLUTION[(corr_threshold, stock, corr_level)]
+    elif "medium" in filename:
+        sol = solutions.MEDIUM_FULL_SOLUTION[(corr_threshold, stock, corr_level)]
+    elif "large" in filename:
+        sol = solutions.LARGE_FULL_SOLUTION[(corr_threshold, stock, corr_level)]
+    else:
+        print("filename: {} not supported!".format(filename))
+         
+    error = False 
+    if sol != res:    
+        error = True 
+        if len(sol) != len(res):
+            return_message += "The number of correlated stocks is not correct, expected {} but got {}.\n".format(len(sol), len(res))
+        else:
+            return_message += "The correlated stocks are not correct, expected {} but got {}.\n".format(sol, res)    
+    else:
+        return_message += " IS CORRECT, Congratulations!"
+
+    return error, return_message
 
 
-def check_timeseries_solution(group_id : int, stock: str, days: list, prices: list, dataset : str, plot: bool = True) -> str:
+
+def check_timeseries_solution(group_id : int, stock: str, days: list, prices: list, plot: bool = True) -> str:
     """
     The method check the results of days, prices, and plot also the target/output
 
@@ -52,15 +66,11 @@ def check_timeseries_solution(group_id : int, stock: str, days: list, prices: li
     :param stock: the name of the stock to print, it should be inside the dataset file
     :param days: a list of (ordered) days to validate/plot
     :param prices: a list of prices (ordered) to validate/plot
-    :param dataset : the file used to evalute the project
     :param plot: wheter plot or not the results
     :return: a string with the successfull or error message
     """
     return_message = "Solution time-series for stock " + stock + ":\n"
-    if "huge" in dataset:
-        soldays, solprices = solutions.TIME_SERIES_SOLUTION_HUGE[stock]
-    else:
-        soldays, solprices = solutions.TIME_SERIES_SOLUTION[stock]
+    soldays, solprices = solutions.TIME_SERIES_SOLUTION[stock]
     if len(days) != len(prices):
         return_message += "The two input lists have different len. Days has len {} while prices has len {} \n".format(str(len(days)),
                                                                                                    str(len(prices)))
@@ -81,15 +91,7 @@ def check_timeseries_solution(group_id : int, stock: str, days: list, prices: li
 
     print("Plotting results...")
     if plot:
-        suffix = "_small"
-        if "medium" in dataset:
-            suffix = "_medium"
-        if "huge" in dataset:
-            suffix = "_huge"
-        if "large" in dataset:
-            suffix = "_large"
-
-        plot_stock_timeseries(stock, days, prices, OUT_FILES + "proj_v2_" + stock + "_result_gid_" + str(group_id) + suffix + ".png")
+        plot_stock_timeseries(stock, days, prices, OUT_FILES + "proj_v2_" + stock + "_result_gid_" + str(group_id) +".png")
 
     return return_message
 
